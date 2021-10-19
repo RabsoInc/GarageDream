@@ -1,0 +1,89 @@
+﻿@model CustomerCreationStageComponentModel
+
+<div class="card h-100">
+    <div class="card-header-primary">Status</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <a asp-action="Manage" asp-controller="Customer" asp-route-CustomerId="@Model.Customer.CustomerId" class="status-bar-titles">Customer Details</a>
+            </div>
+            <div class="col-4">
+                @if (Model.Customer.CustomerId == Guid.Empty)
+                {
+                    <strong class="text-danger">Incomplete</strong>
+                }
+                else
+                {
+                    <strong class="text-success">Complete</strong>
+                }
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-8">
+                <a asp-action="Manage" asp-controller="Address" asp-route-CustomerId="@Model.Customer.CustomerId" class="status-bar-titles">Address Details</a>
+            </div>
+            <div class="col-4">
+                @if (Model.HasAddress == false)
+                {
+                    <strong class="text-danger">Incomplete</strong>
+                }
+                else
+                {
+                    <strong class="text-success">Complete</strong>
+                }
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-8">
+                <a asp-action="Manage" asp-controller="ContactDetail" asp-route-CustomerId="@Model.Customer.CustomerId" class="status-bar-titles">Contact Details</a>
+            </div>
+            <div class="col-4">
+                @if (Model.HasContactDetails == false)
+                {
+                    <strong class="text-danger">Incomplete</strong>
+                }
+                else
+                {
+                    <strong class="text-success">Complete</strong>
+                }
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-8">
+                <a asp-action="Manage" asp-controller="Vehicle" asp-route-CustomerId="@Model.Customer.CustomerId" class="status-bar-titles">Vehical Details</a>
+            </div>
+            <div class="col-4">
+                @if (Model.HasVehicals == false)
+                {
+                    <strong class="text-danger">Incomplete</strong>
+                }
+                else
+                {
+                    <strong class="text-success">Complete</strong>
+                }
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-8">
+                <a asp-action="Manage" asp-controller="ContactDetail" asp-route-CustomerId="@Model.Customer.CustomerId" class="status-bar-titles">Customer Notes</a>
+            </div>
+            <div class="col-4">
+                <strong>@Model.CountOfNotes</strong>
+            </div>
+        </div>
+        <br />
+
+        <a class="form-submit-button" asp-controller="Customer" asp-action="Index">Return to customer list</a>
+
+    </div>
+</div>
+
+      

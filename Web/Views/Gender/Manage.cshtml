@@ -1,0 +1,72 @@
+﻿@model GenderViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+@await Component.InvokeAsync("Title",
+    new
+    {
+        TitleText = "Genders",
+        ActionButtonNeeded = true,
+        ActionText = "Create a new gender",
+        Controller = "Gender",
+        Action = "Manage"
+    })
+
+<div class="row">
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header-primary">Manage Gender</div>
+            <div class="card-body">
+                <form method="post" asp-controller="Gender" asp-action="Manage">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="@Model.Gender.GenderId" />
+                    <div class="mb-3">
+                        <label asp-for="@Model.Gender.GenderDescription" class="form-label"></label>
+                        <input asp-for="@Model.Gender.GenderDescription" class="form-control" id="inputGender" onchange="ValidateSubmitButton()" />
+                        <span asp-validation-for="@Model.Gender.GenderDescription" class="text-danger"></span>
+                    </div>
+                    <button class="form-submit-button" id="genderSubmit" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <table class="table-container">
+            <thead class="table-header-primary">
+                <tr>
+                    <th class="table-row-guid">Gender Id</th>
+                    <th>Gender</th>
+                    <th class="table-row-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var gender in Model.AllGenders)
+                {
+                    <tr>
+                        <td>@gender.GenderId.ToString().ToUpper()</td>
+                        <td>@gender.GenderDescription</td>
+                        <td><a class="table-row-button" asp-action="Manage" asp-controller="Gender" asp-route-GenderId=@gender.GenderId>Edit</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#genderSubmit").prop("disabled", true);
+        ValidateSubmitButton();
+    });
+
+    function ValidateSubmitButton() {
+        if ($('#inputGender').val() != '') {
+            $('#genderSubmit').attr('disabled', false);
+        } else {
+            $('#genderSubmit').attr('disabled', true);
+        }
+    };
+
+</script>

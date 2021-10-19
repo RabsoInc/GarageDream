@@ -1,0 +1,72 @@
+﻿@model FuelTypeViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+@await Component.InvokeAsync("Title",
+    new
+    {
+        TitleText = "Fuel Types",
+        ActionButtonNeeded = true,
+        ActionText = "Create a new fuel type",
+        Controller = "FuelType",
+        Action = "Manage"
+    })
+
+<div class="row">
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header-primary">Manage Fuel Types</div>
+            <div class="card-body">
+                <form method="post" asp-controller="FuelType" asp-action="Manage">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="@Model.FuelType.FuelTypeId" />
+                    <div class="mb-3">
+                        <label asp-for="@Model.FuelType.FuelTypeDescription" class="form-label"></label>
+                        <input asp-for="@Model.FuelType.FuelTypeDescription" class="form-control" id="inputFuelTypeDescription" onchange="ValidateSubmitButton()" />
+                        <span asp-validation-for="@Model.FuelType.FuelTypeDescription" class="text-danger"></span>
+                    </div>
+                    <button class="form-submit-button" id="fuelTypeSubmit" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <table class="table-container">
+            <thead class="table-header-primary">
+                <tr>
+                    <th class="table-row-guid">Fuel Type Id</th>
+                    <th>Fuel Type</th>
+                    <th class="table-row-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var fuelType in Model.AllFuelTypes)
+                {
+                    <tr>
+                        <td>@fuelType.FuelTypeId.ToString().ToUpper()</td>
+                        <td>@fuelType.FuelTypeDescription</td>
+                        <td><a class="table-row-button" asp-action="Manage" asp-controller="FuelType" asp-route-FuelTypeId=@fuelType.FuelTypeId>Edit</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#fuelTypeSubmit").prop("disabled", true);
+        ValidateSubmitButton();
+    });
+
+    function ValidateSubmitButton() {
+        if ($('#inputFuelTypeDescription').val() != '') {
+            $('#fuelTypeSubmit').attr('disabled', false);
+        } else {
+            $('#fuelTypeSubmit').attr('disabled', true);
+        }
+    };
+
+</script>

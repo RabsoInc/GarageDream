@@ -1,0 +1,139 @@
+﻿@model DiarySlotIndexViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<div class="card">
+    <div class="card-body">
+        <form method="get" asp-controller="DiaryAvailability" asp-action="Manage">
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label asp-for="@Model.DiarySlotFilters.StartDate" class="form-label"></label>
+                </div>
+                <div class="col-auto">
+                    <input asp-for="@Model.DiarySlotFilters.StartDate" class="form-control" />
+                </div>
+                <div class="col-auto">
+                    <label asp-for="@Model.DiarySlotFilters.EndDate" class="form-label"></label>
+                </div>
+                <div class="col-auto">
+                    <input asp-for="@Model.DiarySlotFilters.EndDate" class="form-control" />
+                </div>
+                <div class="col-auto">
+                    <label asp-for="@Model.DiarySlotFilters.WorkArea.WorkAreaDescription" class="form-label"></label>
+                </div>
+                <div class="col-auto">
+                    <select asp-for="@Model.DiarySlotFilters.WorkArea.WorkAreaId" asp-items="@ViewBag.WorkAreas" class="form-control"></select>
+                </div>
+                <div class="col-auto">
+                    <button class="form-submit-button">Filter Results</button>
+                </div>
+                <div class="col-auto">
+                    <a class="form-submit-button" asp-controller="DiaryAvailability" asp-action="Manage">Reset Filters</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<br />
+<table class="table-container" id="diarySlots" style="margin-top: 25px;">
+    <thead class="table-header-primary">
+        <tr>
+            <th>Date</th>
+            <th>Working Area</th>
+            <th>Available Slots</th>
+            <th>Booked Slots</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var slot in Model.DiarySlots)
+        {
+            <tr>
+                <td class="workDate">@slot.WorkingDate.ToShortDateString()</td>
+                <td class="workArea">@slot.WorkAreaDescription</td>
+                <td class="availableSlots">@slot.AvailableSlots</td>
+                <td  class="bookedSlots">@slot.BookedSlots</td>
+                <td class="table-row-actions">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item adjustAvailability" data-bs-toggle="modal" data-bs-target="#availabilityModal" data-workArea="@slot.WorkAreaDescription">Edit Availability</a></li>
+                            <li><a class="dropdown-item">View Bookings</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="availabilityModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Adjust Work Area Availability</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="DiaryAvailability" asp-action="AdjustSlots">
+                    <input asp-for="@Model.DiarySlotAdjustment.WorkArea" id="inputWorkArea" hidden readonly />
+                    <input asp-for="@Model.DiarySlotAdjustment.WorkingDate" id="inputWorkDate" hidden readonly />
+                    <div class="mb-3">
+                        <label class="form-label" id="workAreaModal"></label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="dateModal"></label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" id="availableSlotsModal"></label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="@Model.DiarySlotAdjustment.RevisedSlots"></label>
+                        <select class="form-control" id="newAllowanceModal"  asp-for="@Model.DiarySlotAdjustment.RevisedSlots"></select>
+                    </div>
+                    <button class="form-submit-button">Update Allowance</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#diarySlots').DataTable({
+            ordering: false,
+            searching: false
+        });
+
+        AddDataTableStyling();
+
+        $('.adjustAvailability').click(function () {
+            $tr = $(this).closest('tr');
+            var wa = $('.workArea', $tr).text();
+            var as = $('.availableSlots', $tr).text();
+            var wd = $('.workDate', $tr).text();
+            var counter = 1;
+            var maxSlots = $('.availableSlots', $tr).text() - $('.bookedSlots', $tr).text();
+
+            $('#workAreaModal').text('Work Area: ' + wa);
+            $('#dateModal').text('Date: ' + wd);
+            $('#availableSlotsModal').text('Available Slots: ' + as);
+
+            $('#inputWorkArea').val(wa);
+            $('#inputWorkDate').val(wd);
+
+            while (counter <= maxSlots) {
+                $('#newAllowanceModal').append($('<option>', { value: counter, text: counter }));
+                counter = counter + 1;
+            }
+        });
+
+    });
+
+</script>

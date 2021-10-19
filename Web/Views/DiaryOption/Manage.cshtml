@@ -1,0 +1,31 @@
+﻿@model DiaryOption
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+@await Component.InvokeAsync("Title",
+    new
+    {
+        TitleText = "Diary Options & Settings",
+        ActionButtonNeeded = false,
+    })
+
+<div class="row p-4">
+    <div class="card">
+        <div class="card-header-primary">Diary Parameters</div>
+            <div class="card-body">
+                <form method="post" asp-action="Manage" asp-controller="DiaryOption">
+                    <div asp-validation-summary="All"></div>
+                    <input asp-for="@Model.DiaryOptionId" hidden readonly />
+                    <div class="col-6">
+                        <div class="mb-4">
+                            <label asp-for="@Model.DiaryNoticeForwardDays" class="form-label"></label>
+                            <input asp-for="@Model.DiaryNoticeForwardDays" class="form-control" />
+                        </div>
+                    </div>
+                    <button class="form-submit-button">Save Diary Options</button>
+                </form>
+            </div>
+    </div>
+</div>

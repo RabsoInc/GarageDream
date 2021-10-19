@@ -1,0 +1,72 @@
+﻿@model TitleViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+@await Component.InvokeAsync("Title",
+    new
+    {
+        TitleText = "Titles",
+        ActionButtonNeeded = true,
+        ActionText = "Create a new title",
+        Controller = "Title",
+        Action = "Manage"
+    })
+
+<div class="row">
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header-primary">Manage Gender</div>
+            <div class="card-body">
+                <form method="post" asp-controller="Title" asp-action="Manage">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="@Model.Title.TitleId" />
+                    <div class="mb-3">
+                        <label asp-for="@Model.Title.TitleDescription" class="form-label"></label>
+                        <input asp-for="@Model.Title.TitleDescription" class="form-control" id="inputTitle" onchange="ValidateSubmitButton()" />
+                        <span asp-validation-for="@Model.Title.TitleDescription" class="text-danger"></span>
+                    </div>
+                    <button class="form-submit-button" id="titleSubmit" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <table class="table-container">
+            <thead class="table-header-primary">
+                <tr>
+                    <th class="table-row-guid">Title Id</th>
+                    <th>Title</th>
+                    <th class="table-row-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var title in Model.AllTitles)
+                {
+                    <tr>
+                        <td>@title.TitleId.ToString().ToUpper()</td>
+                        <td>@title.TitleDescription</td>
+                        <td><a class="table-row-button" asp-action="Manage" asp-controller="Title" asp-route-TitleId=@title.TitleId>Edit</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#titleSubmit").prop("disabled", true);
+        ValidateSubmitButton();
+    });
+
+    function ValidateSubmitButton() {
+        if ($('#inputTitle').val() != '') {
+            $('#titleSubmit').attr('disabled', false);
+        } else {
+            $('#titleSubmit').attr('disabled', true);
+        }
+    };
+
+</script>

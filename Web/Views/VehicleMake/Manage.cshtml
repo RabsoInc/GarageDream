@@ -1,0 +1,72 @@
+﻿@model VehicleMakeViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+@await Component.InvokeAsync("Title",
+    new
+    {
+        TitleText = "Vehicle Makes",
+        ActionButtonNeeded = true,
+        ActionText = "Create a new Vehicle Type",
+        Controller = "VehicleType",
+        Action = "Manage"
+    })
+
+<div class="row">
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header-primary">Manage Vehicle Types</div>
+            <div class="card-body">
+                <form method="post" asp-controller="VehicleMake" asp-action="Manage">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="@Model.VehicleMake.VehicleMakeId" />
+                    <div class="mb-3">
+                        <label asp-for="@Model.VehicleMake.VehicleMakeDescription" class="form-label"></label>
+                        <input asp-for="@Model.VehicleMake.VehicleMakeDescription" class="form-control" id="inputVehicleMake" onchange="ValidateSubmitButton()" />
+                        <span asp-validation-for="@Model.VehicleMake.VehicleMakeDescription" class="text-danger"></span>
+                    </div>
+                    <button class="form-submit-button" id="vehicleMakeSubmit" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <table class="table-container">
+            <thead class="table-header-primary">
+                <tr>
+                    <th class="table-row-guid">Vehicle Make Id</th>
+                    <th>Vehicle Make</th>
+                    <th class="table-row-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vehicleMake in Model.AllVehicleMakes)
+                {
+                    <tr>
+                        <td>@vehicleMake.VehicleMakeId.ToString().ToUpper()</td>
+                        <td>@vehicleMake.VehicleMakeDescription</td>
+                        <td><a class="table-row-button" asp-action="Manage" asp-controller="VehicleMake" asp-route-VehicleMakeId=@vehicleMake.VehicleMakeId>Edit</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#vehicleMakeSubmit").prop("disabled", true);
+        ValidateSubmitButton();
+    });
+
+    function ValidateSubmitButton() {
+        if ($('#inputVehicleMake').val() != '') {
+            $('#vehicleMakeSubmit').attr('disabled', false);
+        } else {
+            $('#vehicleMakeSubmit').attr('disabled', true);
+        }
+    };
+
+</script>

@@ -1,0 +1,87 @@
+﻿@model ContactDetailsViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<div class="row">
+    <div class="col-3">
+        @await Component.InvokeAsync("CreateCustomerStage", Model.Customer.CustomerId)
+    </div>
+    <div class="col-9">
+        <div class="card h-100">
+            <div class="card-header-primary">Manage Address</div>
+            <div class="card-body">
+                <form method="post" asp-controller="Address" asp-action="Manage">
+                    <input asp-for="@Model.Address.AddressId" hidden readonly />
+                    <input asp-for="@Model.Customer.CustomerId" hidden readonly />
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-4">
+                                <label asp-for="@Model.Address.AddressLine1" class="form-label"></label>
+                                <input asp-for="@Model.Address.AddressLine1" class="form-control" id="inputAddressLine1" onchange="ValidateSubmitButton()" />
+                                <span asp-validation-for="@Model.Address.AddressLine1" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-4">
+                                <label asp-for="@Model.Address.AddressLine2" class="form-label"></label>
+                                <input asp-for="@Model.Address.AddressLine2" class="form-control" id="inputAddressLine2" onchange="ValidateSubmitButton()" />
+                                <span asp-validation-for="@Model.Address.AddressLine2" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-4">
+                                <label asp-for="@Model.Address.AddressLine3" class="form-label"></label>
+                                <input asp-for="@Model.Address.AddressLine3" class="form-control" id="inputAddressLine3" onchange="ValidateSubmitButton()" />
+                                <span asp-validation-for="@Model.Address.AddressLine3" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-4">
+                                <label asp-for="@Model.Address.AddressLine4" class="form-label"></label>
+                                <input asp-for="@Model.Address.AddressLine4" class="form-control" id="inputAddressLine4" onchange="ValidateSubmitButton()" />
+                                <span asp-validation-for="@Model.Address.AddressLine4" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-4">
+                                <label asp-for="@Model.Address.PostCode" class="form-label"></label>
+                                <input asp-for="@Model.Address.PostCode" class="form-control" id="inputAddressPostCode" onchange="ValidateSubmitButton()" />
+                                <span asp-validation-for="@Model.Address.PostCode" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button class="form-submit-button" id="submitAddressDetails">Save Address Details</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#submitAddressDetails").prop("disabled", true);
+        ValidateSubmitButton();
+    });
+
+    function ValidateSubmitButton() {
+        if
+            (
+            $('#inputAddressLine1').val() != ''
+            && $('#inputAddressPostCode').val() != ''
+        ) {
+            $('#submitAddressDetails').attr('disabled', false);
+        }
+        else {
+            $('#submitAddressDetails').attr('disabled', true);
+        }
+    };
+
+</script>

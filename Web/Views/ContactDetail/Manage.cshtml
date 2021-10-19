@@ -1,0 +1,94 @@
+﻿@model ContactDetailsViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<div class="row">
+    <div class="col-3">
+        @await Component.InvokeAsync("CreateCustomerStage", Model.Customer.CustomerId)
+    </div>
+    <div class="col-9">
+        <div class="card h-100">
+            <div class="card-header-primary">Manage Contact Method</div>
+            <div class="card-body">
+                <form method="post" asp-controller="ContactDetail" asp-action="Manage">
+                    <input asp-for="@Model.CustomerContactDetail.CustomerContactDetailId" hidden readonly />
+                    <input asp-for="@Model.Customer.CustomerId" hidden readonly />
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-4">
+                                <label asp-for="@Model.CustomerContactDetail.ContactMethodType.ContactMethodTypeDescription" class="form-label"></label>
+                                <select asp-for="@Model.CustomerContactDetail.ContactMethodType.ContactMethodTypeId" asp-items="@ViewBag.ContactMethods" class="form-select" id="selectContactMethod" onchange="ValidateSubmitButton()"></select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-4">
+                                <label asp-for="@Model.CustomerContactDetail.Value" class="form-label"></label>
+                                <input asp-for="@Model.CustomerContactDetail.Value" class="form-control" id="inputContactMethodValue" onchange="ValidateSubmitButton()" />
+                                <span asp-validation-for="@Model.CustomerContactDetail.Value" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-4">
+                            <label asp-for="@Model.CustomerContactDetail.Comments" class="form-label"></label>
+                            <input asp-for="@Model.CustomerContactDetail.Comments" class="form-control" id="inputContactMethodComments" onchange="ValidateSubmitButton()" />
+                            <span asp-validation-for="@Model.CustomerContactDetail.Comments" class="text-danger"></span>
+                        </div>
+                        <button class="form-submit-button" id="submitContactDetails">Save Contact Details</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col">
+        <table class="table-container">
+            <thead class="table-header-primary">
+                <tr>
+                    <th>Contact Method Type</th>
+                    <th>Contact Method Details</th>
+                    <th>Comments</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.AllCustomerContactDetails)
+                {
+                    <tr>
+                        <td>@c.ContactMethodType.ContactMethodTypeDescription</td>
+                        <td>@c.Value</td>
+                        <td>@c.Comments</td>
+                        <td><a class="table-row-button" asp-action="Manage" asp-controller="ContactDetail" asp-route-CustomerContactDetailId=@c.CustomerContactDetailId asp-route-CustomerId="@c.Customer.CustomerId">Edit</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#submitContactDetails").prop("disabled", true);
+        ValidateSubmitButton();
+    });
+
+    function ValidateSubmitButton() {
+        if
+            (
+            $('#selectContactMethod').val() != '00000000-0000-0000-0000-000000000000'
+            && $('#inputContactMethodValue').val() != ''
+            && $('#inputContactMethodComments').val() != ''
+        ) {
+            $('#submitContactDetails').attr('disabled', false);
+        }
+        else {
+            $('#submitContactDetails').attr('disabled', true);
+        }
+    };
+
+</script>

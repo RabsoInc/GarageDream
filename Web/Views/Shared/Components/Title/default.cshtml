@@ -1,0 +1,18 @@
+﻿@model TitleComponentModel
+
+<div class="row p-4">
+    <div class="col-10">
+        <h5>@Model.TitleText</h5>
+        <hr />
+    </div>
+    @if (Model.ActionButtonNeeded == true)
+    {
+        <div class="col-2">
+            <a class="btn btn-success"
+               asp-controller="@Model.Controller"
+               asp-action="@Model.Action">
+                @Model.ActionText
+            </a>
+        </div>
+    }
+</div>

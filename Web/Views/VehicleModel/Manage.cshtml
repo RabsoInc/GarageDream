@@ -1,0 +1,80 @@
+﻿@model VehicleModelViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+@await Component.InvokeAsync("Title",
+    new
+    {
+        TitleText = "Vehicle Models",
+        ActionButtonNeeded = true,
+        ActionText = "Create a new Vehicle Model",
+        Controller = "VehicleModel",
+        Action = "Manage"
+    })
+
+<div class="row">
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header-primary">Manage Vehicle Models</div>
+            <div class="card-body">
+                <form method="post" asp-controller="VehicleModel" asp-action="Manage">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="@Model.VehicleModel.VehicleModelId" />
+                    <div class="mb-3">
+                        <label asp-for="@Model.VehicleModel.VehicleMake.VehicleMakeDescription" class="form-label"></label>
+                        <select asp-for="@Model.VehicleModel.VehicleMake.VehicleMakeId" asp-items="@ViewBag.VehicalMakes" class="form-select" id="selectVehicleMake" onchange="ValidateSubmitButton()"></selectonchange> </select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="@Model.VehicleModel.VehicleModelDescription" class="form-label"></label>
+                        <input asp-for="@Model.VehicleModel.VehicleModelDescription" class="form-control" id="inputVehicleModel" onchange="ValidateSubmitButton()" />
+                        <span asp-validation-for="@Model.VehicleModel.VehicleModelDescription" class="text-danger"></span>
+                    </div>
+                    <button class="form-submit-button" id="vehicleModelSubmit" type="submit">Save Vehicle Models</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <table class="table-container">
+            <thead class="table-header-primary">
+                <tr>
+                    <th class="table-row-guid">Vehicle Model Id</th>
+                    <th>Vehicle Make</th>
+                    <th>Vehicle Model</th>
+                    <th class="table-row-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vehicleModel in Model.AllVehicleModels)
+                {
+                <tr>
+                    <td>@vehicleModel.VehicleModelId.ToString().ToUpper()</td>
+                    <td>@vehicleModel.VehicleMake.VehicleMakeDescription</td>
+                    <td>@vehicleModel.VehicleModelDescription</td>
+                    <td><a class="table-row-button" asp-action="Manage" asp-controller="VehicleModel" asp-route-VehicleModelId=@vehicleModel.VehicleModelId>Edit</a></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#vehicleModelSubmit").prop("disabled", true);
+        ValidateSubmitButton();
+    });
+
+    function ValidateSubmitButton() {
+        if ($('#inputVehicleMake').val() != ''
+            && ($('#selectVehicleMake').val() != '00000000-0000-0000-0000-000000000000'))
+        {
+            $('#vehicleModelSubmit').attr('disabled', false);
+        } else {
+            $('#vehicleModelSubmit').attr('disabled', true);
+        }
+    };
+
+</script>

@@ -1,0 +1,136 @@
+﻿@model VehicleViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<div class="row">
+    <div class="col-3">
+        @await Component.InvokeAsync("CreateCustomerStage", Model.Customer.CustomerId)
+    </div>
+    <div class="col-9" id="vehicleLoad">
+        <div class="card h-100">
+            <div class="card-header-primary">Manage Vehicles</div>
+            <div class="card-body-light">
+                <div class="card-body">
+                    <form method="post" asp-controller="Vehicle" asp-action="Manage">
+                        <input asp-for="@Model.Vehicle.VehicleId" hidden readonly />
+                        <input asp-for="@Model.Customer.CustomerId" hidden readonly />
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label asp-for="@Model.Vehicle.VehicleMake.VehicleMakeDescription" class="form-label"></label>
+                                    <select asp-for="@Model.Vehicle.VehicleMake.VehicleMakeId" asp-items=@ViewBag.VehicalMakes class="form-select" id="vehicleMakesSelect" onchange="ValidateSubmitButton()"></select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label asp-for="@Model.Vehicle.VehicleModel.VehicleModelDescription" class="form-label"></label>
+                                    <select asp-for="@Model.Vehicle.VehicleModel.VehicleModelId" asp-items="@ViewBag.VehicalModels" class="form-select" id="vehicleModelsSelect" onchange="ValidateSubmitButton()"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label asp-for="@Model.Vehicle.RegistrationNumber" class="form-label"></label>
+                                    <input asp-for="@Model.Vehicle.RegistrationNumber" class="form-control" id="inputRegistrationNumber" onchange="ValidateSubmitButton()" />
+                                    <span asp-validation-for="@Model.Vehicle.RegistrationNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label asp-for="@Model.Vehicle.FuelType.FuelTypeDescription" class="form-label"></label>
+                                    <select asp-for="@Model.Vehicle.FuelType.FuelTypeId" asp-items=@ViewBag.FuelTypes class="form-select" id="fuelTypeSelect" onchange="ValidateSubmitButton()"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <button class="form-submit-button" id="vehicleSubmit" type="submit">Save Vehicle Details</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-9" id="noVehicleDoad"> 
+        <p>No Data</p>
+    </div>
+</div>
+    <br />
+
+    <div class="row p-4">
+        <table class="table-container">
+            <thead class="table-header-primary">
+                <tr>
+                    <th>Registration Number</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>Fuel</th>
+                    <th class="table-row-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vehicle in Model.AllVehicles)
+                {
+                    <tr>
+                        <td>@vehicle.RegistrationNumber</td>
+                        <td>@vehicle.VehicleMake.VehicleMakeDescription</td>
+                        <td>@vehicle.VehicleModel.VehicleModelDescription</td>
+                        <td>@vehicle.FuelType.FuelTypeDescription</td>
+                        <td class="table-row-actions">
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" asp-action="Manage" asp-controller="Vehicle" asp-route-CustomerId="@vehicle.Customer.CustomerId" asp-route-VehicleId="@vehicle.VehicleId">Edit</a></li>
+                                    <li><a class="dropdown-item" asp-action="Manage" asp-controller="Vehicle" asp-route-CustomerId="@vehicle.Customer.CustomerId" asp-route-VehicleId="@vehicle.VehicleId">Book Repair</a></li>
+                                    <li><a class="dropdown-item" asp-action="Manage" asp-controller="Vehicle" asp-route-CustomerId="@vehicle.Customer.CustomerId" asp-route-VehicleId="@vehicle.VehicleId">Repair History</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#vehicleSubmit").prop("disabled", true);
+        ValidateSubmitButton();
+});
+
+function ValidateSubmitButton() {
+    if (
+        $('#vehicleMakesSelect').val() != '00000000-0000-0000-0000-000000000000'
+        && $('#vehicleModelsSelect').val() != '00000000-0000-0000-0000-000000000000'
+        && $('#fuelTypeSelect').val() != '00000000-0000-0000-0000-000000000000'
+        && $('#inputRegistrationNumber').val() != ""
+    )
+    {
+        $('#vehicleSubmit').attr('disabled', false);
+    } else {
+        $('#vehicleSubmit').attr('disabled', true);
+    }
+    };
+
+$(function () {
+    $("#vehicleMakesSelect").change(function () {
+        var url = '@Url.Content("~/")' + "Vehicle/GetVehicleModels";
+        var ddlSource = "#vehicleMakesSelect";
+        $.getJSON(url, { VehicleMakeId: $(ddlSource).val() }, function (data) {
+            var items = '';
+            $("#vehicleModelsSelect").empty();
+            $.each(data, function (i, row) {
+                items += "<option value='" + row.value + "'>" + row.text + "</option>"
+            });
+            $("#vehicleModelsSelect").html(items);
+        });
+    });
+});
+
+</script>

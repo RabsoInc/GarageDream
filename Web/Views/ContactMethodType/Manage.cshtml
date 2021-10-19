@@ -1,0 +1,72 @@
+﻿@model ContactMethodTypeViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+@await Component.InvokeAsync("Title",
+    new
+    {
+        TitleText = "Contact Methods",
+        ActionButtonNeeded = true,
+        ActionText = "Create new contact method",
+        Controller = "ContactMethodType",
+        Action = "Manage"
+    })
+
+<div class="row">
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header-primary">Manage Contact Types</div>
+            <div class="card-body">
+                <form method="post" asp-controller="ContactMethodType" asp-action="Manage">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="@Model.ContactMethodType.ContactMethodTypeId" />
+                    <div class="mb-3">
+                        <label asp-for="@Model.ContactMethodType.ContactMethodTypeDescription" class="form-label"></label>
+                        <input asp-for="@Model.ContactMethodType.ContactMethodTypeDescription" class="form-control" id="inputContactMethodType" onchange="ValidateSubmitButton()" />
+                        <span asp-validation-for="@Model.ContactMethodType.ContactMethodTypeDescription" class="text-danger"></span>
+                    </div>
+                    <button class="form-submit-button" id="contactMethodTypeSubmit" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <table class="table-container">
+            <thead class="table-header-primary">
+                <tr>
+                    <th class="table-row-guid">Contact Method Type Id Id</th>
+                    <th>Contact Method Type</th>
+                    <th class="table-row-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AllContactMethodType)
+                {
+                    <tr>
+                        <td>@item.ContactMethodTypeId.ToString().ToUpper()</td>
+                        <td>@item.ContactMethodTypeDescription</td>
+                        <td><a class="table-row-button" asp-action="Manage" asp-controller="ContactMethodType" asp-route-ContactMethodTypeId=@item.ContactMethodTypeId>Edit</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#contactMethodTypeSubmit").prop("disabled", true);
+        ValidateSubmitButton();
+    });
+
+    function ValidateSubmitButton() {
+        if ($('#inputContactMethodType').val() != '') {
+            $('#contactMethodTypeSubmit').attr('disabled', false);
+        } else {
+            $('#contactMethodTypeSubmit').attr('disabled', true);
+        }
+    };
+
+</script>

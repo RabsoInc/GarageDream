@@ -1,0 +1,79 @@
+﻿@model WorkAreaViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+@await Component.InvokeAsync("Title",
+    new
+    {
+        TitleText = "Work Areas",
+        ActionButtonNeeded = true,
+        ActionText = "Create a new work area",
+        Controller = "WorkArea",
+        Action = "Manage"
+    })
+
+<div class="row">
+    <div class="col-3">
+        <div class="card">
+            <div class="card-header-primary">Manage Work Areas</div>
+            <div class="card-body">
+                <form method="post" asp-controller="WorkArea" asp-action="Manage">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="@Model.WorkArea.WorkAreaId" />
+                    <div class="mb-3">
+                        <label asp-for="@Model.WorkArea.WorkAreaDescription" class="form-label"></label>
+                        <input asp-for="@Model.WorkArea.WorkAreaDescription" class="form-control" id="inputWorkArea" onchange="ValidateSubmitButton()" />
+                        <span asp-validation-for="@Model.WorkArea.WorkAreaDescription" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="@Model.WorkArea.DefaultUnits" class="form-label"></label>
+                        <input asp-for="@Model.WorkArea.DefaultUnits" class="form-control"/>
+                        <span asp-validation-for="@Model.WorkArea.DefaultUnits" class="text-danger"></span>
+                    </div>
+                    <button class="form-submit-button" id="workAreaSubmit" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <table class="table-container">
+            <thead class="table-header-primary">
+                <tr>
+                    <th class="table-row-guid">Work Area Id</th>
+                    <th>Work Area</th>
+                    <th>Default Units</th>
+                    <th class="table-row-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var workArea in Model.AllWorkAreas)
+                {
+                <tr>
+                    <td>@workArea.WorkAreaId.ToString().ToUpper()</td>
+                    <td>@workArea.WorkAreaDescription</td>
+                    <td>@workArea.DefaultUnits</td>
+                    <td><a class="table-row-button" asp-action="Manage" asp-controller="WorkArea" asp-route-WorkAreaId=@workArea.WorkAreaId>Edit</a></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#workAreaSubmit").prop("disabled", true);
+        ValidateSubmitButton();
+    });
+
+    function ValidateSubmitButton() {
+        if ($('#inputWorkArea').val() != '') {
+            $('#workAreaSubmit').attr('disabled', false);
+        } else {
+            $('#workAreaSubmit').attr('disabled', true);
+        }
+    };
+
+</script>

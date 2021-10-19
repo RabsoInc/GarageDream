@@ -1,0 +1,63 @@
+﻿$primary: #800080;
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.card-header-primary {
+    @extend .card-header;
+    @extend .bg-primary;
+    @extend .text-white;
+}
+
+.card-body-light {
+    @extend .card-body;
+    @extend .border;
+    @extend .border-dark;
+}
+
+.dashboard-navigation-items {
+    @extend .btn;
+    @extend .btn-success;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.form-submit-button{
+    @extend .btn;
+    @extend .btn-success;
+    width: 100%;
+}
+
+.status-bar-titles {
+    @extend .btn;
+    @extend .btn-secondary;
+    width: 100%;
+}
+
+.table-container {
+    @extend .table;
+    @extend .table-bordered;
+    @extend .border-dark;
+    @extend .table-striped;
+}
+
+.table-header-primary {
+    @extend .bg-primary;
+    @extend .text-white;
+}
+
+.table-row-guid {
+    width: 375px;
+}
+
+.table-row-actions {
+    width: 200px;
+}
+
+.table-row-button {
+    @extend .btn;
+    @extend .btn-success;
+    width: 100px;
+}
