@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Models.BaseModels.Vehicles;
+using System;
 using System.ComponentModel.DataAnnotations;
-using Models.BaseModels.Vehicles;
 
 namespace Models.BaseModels.Repair
 {

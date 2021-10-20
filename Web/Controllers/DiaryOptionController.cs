@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Models.BaseModels;
 using Models.BaseModels.Diary;
-using Services.Interfaces;
+using Services.Interfaces.Diary;
 using System;
 
 namespace Web.Controllers

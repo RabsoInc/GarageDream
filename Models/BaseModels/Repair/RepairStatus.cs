@@ -10,7 +10,6 @@ namespace Models.BaseModels.Repair
 
         [Required]
         [Display(Name = "Precedence Order")]
-        [MaxLength(100)]
         public int PrecedenceOrder { get; set; }
 
         [Required]

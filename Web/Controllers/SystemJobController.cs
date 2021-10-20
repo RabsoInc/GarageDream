@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Models.BaseModels.System;
-using Models.ViewModels;
-using Services.Interfaces;
+using Models.ViewModels.System;
+using Services.Interfaces.Dapper;
+using Services.Interfaces.Diary;
+using Services.Interfaces.Generic;
+using Services.Interfaces.System;
 using System;
 
 namespace Web.Controllers

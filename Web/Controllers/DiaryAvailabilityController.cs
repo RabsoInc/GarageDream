@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
-using Models.ViewModels;
-using Services.Interfaces;
-using System.Linq;
+using Models.ViewModels.Diary;
+using Services.Interfaces.Dapper;
+using Services.Interfaces.Diary;
+using Services.Interfaces.Repair;
 
 namespace Web.Controllers
 {

@@ -1,5 +1,4 @@
-﻿using Models.BaseModels;
-using Models.BaseModels.CRM;
+﻿using Models.BaseModels.CRM;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models.ComponentModels

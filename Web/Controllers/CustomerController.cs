@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
-using Models.BaseModels;
 using Models.BaseModels.CRM;
-using Models.ViewModels;
+using Models.ViewModels.CRM;
 using Services.Interfaces;
+using Services.Interfaces.CRM;
+using Services.Interfaces.Dapper;
 using System;
 
 namespace Web.Controllers

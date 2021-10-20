@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Models.ComponentModels;
-using Services.Interfaces;
+using Services.Interfaces.Custom;
 using System.Threading.Tasks;
 
 namespace Web.Components

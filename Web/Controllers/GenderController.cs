@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Models.BaseModels;
 using Models.BaseModels.CRM;
-using Models.ViewModels;
+using Models.ViewModels.CRM;
 using Services.Interfaces;
 using System;
 

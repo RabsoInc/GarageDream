@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Models.ViewModels;
+using Models.ViewModels.Vehicles;
 using Services.Interfaces;
 using System;
 

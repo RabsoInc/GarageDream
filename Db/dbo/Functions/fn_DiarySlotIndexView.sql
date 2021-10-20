@@ -6,15 +6,15 @@ SELECT CAST(DWD.WorkingDate AS DATE) AS 'WorkingDate', WA.WorkAreaDescription,
 	(SELECT COUNT(*) FROM DiarySlots DS2 
 		WHERE DS.DiaryWorkingDateId = DS2.DiaryWorkingDateId 
 		AND DS.WorkAreaId = DS2.WorkAreaId
-		AND DS2.CustomerJobId IS NULL) AS 'AvailableSlots',
+		AND DS2.CustomerJobRepairHeaderId IS NULL) AS 'AvailableSlots',
 	(SELECT COUNT(*) FROM DiarySlots DS2 
 		WHERE DS.DiaryWorkingDateId = DS2.DiaryWorkingDateId 
 		AND DS.WorkAreaId = DS2.WorkAreaId
-		AND DS2.CustomerJobId IS NOT NULL) AS 'BookedSlots'
+		AND DS2.CustomerJobRepairHeaderId IS NOT NULL) AS 'BookedSlots'
 FROM DiarySlots DS
 	INNER JOIN DiaryWorkingDates DWD ON DS.DiaryWorkingDateId = DWD.DiaryWorkingDateId
 	INNER JOIN WorkAreas WA ON DS.WorkAreaId = WA.WorkAreaId
-WHERE DS.CustomerJobId IS NULL
+WHERE DS.CustomerJobRepairHeaderId IS NULL
 AND DWD.WorkingDate > GETDATE()
 AND
 (

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Models.ComponentModels;
-using Services.Interfaces;
+using Services.Interfaces.CRM;
+using Services.Interfaces.Dapper;
 using System;
 using System.Threading.Tasks;
 

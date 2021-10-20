@@ -1,0 +1,89 @@
+﻿@model RepairStatusViewModel
+
+@{
+    ViewData["Title"] = "Manage";
+}
+
+@await Component.InvokeAsync("Title",
+    new
+    {
+        TitleText = "Repair Statuses",
+        ActionButtonNeeded = true,
+        ActionText = "Create a new repair status",
+        Controller = "RepairStatus",
+        Action = "Manage"
+    })
+
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header-primary">Manage Repair Status</div>
+            <div class="card-body">
+                <form method="post" asp-controller="RepairStatus" asp-action="Manage">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="@Model.RepairStatus.RepairStatusId" />
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label asp-for="@Model.RepairStatus.RepairStatusDescription" class="form-label"></label>
+                                <input asp-for="@Model.RepairStatus.RepairStatusDescription" class="form-control" id="inputRepairStatusDescription" onchange="ValidateSubmitButton()" />
+                                <span asp-validation-for="@Model.RepairStatus.RepairStatusDescription" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label asp-for="@Model.RepairStatus.PrecedenceOrder" class="form-label"></label>
+                                <input asp-for="@Model.RepairStatus.PrecedenceOrder" class="form-control" id="inputRepairStatusPrecedenceOrder" onchange="ValidateSubmitButton()" />
+                                <span asp-validation-for="@Model.RepairStatus.PrecedenceOrder" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="form-submit-button" id="repairStatusSubmit" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <table class="table-container">
+            <thead class="table-header-primary">
+                <tr>
+                    <th class="table-row-guid">Repair Status Id</th>
+                    <th>Precedence Order</th>
+                    <th>Repair Status</th>
+                    <th class="table-row-actions"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var repairStatus in Model.AllRepairStatuses)
+                {
+                <tr>
+                    <td>@repairStatus.RepairStatusId.ToString().ToUpper()</td>
+                    <td>@repairStatus.PrecedenceOrder</td>
+                    <td>@repairStatus.RepairStatusDescription</td>
+                    <td><a class="table-row-button" asp-action="Manage" asp-controller="RepairStatus" asp-route-GenderId=@repairStatus.RepairStatusId>Edit</a></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#repairStatusSubmit").prop("disabled", true);
+        ValidateSubmitButton();
+    });
+
+    function ValidateSubmitButton() {
+        if ($('#inputRepairStatusDescription').val() != ''
+            && $('#inputRepairStatusPrecedenceOrder').val() != '')
+        {
+            $('#repairStatusSubmit').attr('disabled', false);
+        }
+        else
+        {
+            $('#repairStatusSubmit').attr('disabled', true);
+        }
+    };
+
+</script>

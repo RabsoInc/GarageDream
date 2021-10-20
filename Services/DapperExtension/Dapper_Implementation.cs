@@ -1,10 +1,10 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using Models.BaseModels;
 using Models.BaseModels.System;
 using Models.InternalViewModels;
-using Models.ViewModels;
-using Services.Interfaces;
+using Models.ViewModels.Diary;
+using Models.ViewModels.System;
+using Services.Interfaces.Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data;

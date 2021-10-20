@@ -8,8 +8,21 @@ using Microsoft.Extensions.Hosting;
 using Models.BaseModels.Identity;
 using Services;
 using Services.DapperExtension;
-using Services.Implementation;
+using Services.Implementation.CRM;
+using Services.Implementation.Custom;
+using Services.Implementation.Diary;
+using Services.Implementation.Generic;
+using Services.Implementation.Repair;
+using Services.Implementation.System;
+using Services.Implementation.Vehicles;
 using Services.Interfaces;
+using Services.Interfaces.CRM;
+using Services.Interfaces.Custom;
+using Services.Interfaces.Dapper;
+using Services.Interfaces.Diary;
+using Services.Interfaces.Generic;
+using Services.Interfaces.Repair;
+using Services.Interfaces.System;
 
 namespace Web
 {
@@ -43,6 +56,7 @@ namespace Web
             services.AddTransient<IDiarySlot, DiarySlot_Implementation>();
             services.AddTransient<IFuelType, FuelType_Implementation>();
             services.AddTransient<IGender, Gender_Implementation>();
+            services.AddTransient<IRepairStatus, RepairStatus_Implementation>();
             services.AddTransient<IStaticLists, StaticLists_Implementation>();
             services.AddTransient<ISystemJob, SystemJob_Implementation>();
             services.AddTransient<ISystemJobHistory, SystemJobHistory_Implementation>();

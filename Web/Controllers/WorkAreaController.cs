@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Models.ViewModels;
-using Services.Interfaces;
+using Models.ViewModels.Repair;
+using Services.Interfaces.Repair;
 using System;
 
 namespace Web.Controllers
