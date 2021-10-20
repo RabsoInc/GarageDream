@@ -16,6 +16,7 @@ namespace Services.Interfaces.Dapper
         public List<DiarySlotViewModel> GenerateDiarySlotsIndexView(string ConnectionString, DiarySlotFilterViewModel Filters);
         public List<SystemJobIndexViewModel> GenerateSystemJobHistory(string ConnectionString);
         public void ManualRunSystemJob(SystemJob SystemJob, string ConnectionString);
+        public void SetRepairHeaderStatus(string ConnectionString, Guid RepairHeaderId);
         public void RunAllAutoSystemJobs(List<SystemJob> SystemJobs, string ConnectionString);
 
 

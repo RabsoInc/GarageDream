@@ -16,7 +16,6 @@ namespace Services.Implementation.Repair
         {
             this.db = db;
         }
-
         public RepairHeader CreateRecord(RepairHeader entity)
         {
             db.RepairHeader.Add(entity);
@@ -32,6 +31,12 @@ namespace Services.Implementation.Repair
         public List<RepairHeader> ReturnAllRecords()
         {
             return db.RepairHeader
+                    .Include(x => x.Vehicle)
+                    .Include(x => x.Vehicle.VehicleMake)
+                    .Include(x => x.Vehicle.VehicleModel)
+                    .Include(x => x.Vehicle.Customer)
+                    .Include(x => x.Vehicle.Customer.Title)
+                    .Include(x => x.RepairStatus)
                     .OrderBy(x => x.Vehicle.Customer.LastName)
                     .ToList();
         }
@@ -45,6 +50,7 @@ namespace Services.Implementation.Repair
                 .Include(x => x.Vehicle)
                 .Include(x => x.Vehicle.VehicleMake)
                 .Include(x => x.Vehicle.VehicleModel)
+                .Include(x => x.RepairStatus)
                 .OrderByDescending(x => x.JobBooked)
                 .ToList();
 
@@ -64,14 +70,14 @@ namespace Services.Implementation.Repair
 
         public RepairHeader ReturnSingleRecord(string Description)
         {
-            return db.RepairHeader
+            return ReturnAllRecords()
                 .Where(x => x.Vehicle.RegistrationNumber == Description)
                 .FirstOrDefault();
         }
 
         public RepairHeader ReturnSingleRecord(Guid Id)
         {
-            return db.RepairHeader
+            return ReturnAllRecords()
                 .Where(x => x.RepairHeaderId == Id)
                 .FirstOrDefault();
         }

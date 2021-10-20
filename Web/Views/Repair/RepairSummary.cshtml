@@ -4,6 +4,11 @@
     ViewData["Title"] = "RaiseNewJob";
 }
 
+<h4 class="text-primary">@Model.RepairHeader.RepairStatus.RepairStatusDescription</h4>
+<div class="progress position-relative" style="height:30px">
+    <div class="progress-bar" role="progressbar" style="width: @Model.RepairHeaderStatusPerc" aria-valuenow=@Model.RepairHeaderStatusPerc aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+
 @await Component.InvokeAsync("Title",
     new
     {
@@ -11,3 +16,25 @@
         ActionButtonNeeded = false
     })
 
+<div class="row">
+    <div class="col">
+        <label>Customer: @Model.RepairHeader.Vehicle.Customer.Title.TitleDescription @Model.RepairHeader.Vehicle.Customer.FirstName @Model.RepairHeader.Vehicle.Customer.LastName</label>
+    </div>
+    <div class="col">
+        <label>Vehicle: @Model.RepairHeader.Vehicle.VehicleMake.VehicleMakeDescription @Model.RepairHeader.Vehicle.VehicleModel.VehicleModelDescription @Model.RepairHeader.Vehicle.RegistrationNumber</label>
+    </div>
+    <div class="col">
+        <label>Booked: @Model.RepairHeader.JobBooked</label>
+    </div>
+</div>
+
+<br />
+
+<div class="row">
+    <div class="col-6">
+        <strong>Repair Instructions</strong>
+    </div>
+    <div class="col-6">
+        <strong>Items Used</strong>
+    </div>
+</div>

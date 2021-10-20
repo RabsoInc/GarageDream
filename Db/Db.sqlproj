@@ -100,6 +100,7 @@
     <Build Include="dbo\Functions\fn_DiarySlotIndexView.sql" />
     <Build Include="dbo\Tables\RepairStatuses.sql" />
     <Build Include="dbo\Tables\RepairHeader.sql" />
+    <Build Include="dbo\Stored Procedures\SetRepairHeaderStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SqlSchemaCompare.scmp" />

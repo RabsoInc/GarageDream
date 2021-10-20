@@ -7,5 +7,8 @@ namespace Models.ViewModels.Repair
     {
         [Required]
         public RepairHeader RepairHeader { get; set; }
+
+        [Required]
+        public string RepairHeaderStatusPerc { get; set; }
     }
 }

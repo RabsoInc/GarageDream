@@ -147,6 +147,7 @@ namespace Services.DapperExtension
             connection.Query(commandText);
         }
 
+
         public void RunAllAutoSystemJobs(List<SystemJob> SystemJobs, string ConnectionString)
         {
             using IDbConnection connection = new SqlConnection(ConnectionString);
@@ -155,6 +156,12 @@ namespace Services.DapperExtension
                 string commandText = string.Concat("EXEC {0}", job.ProcedureName);
                 connection.Query(commandText);
             }
+        }
+
+        public void SetRepairHeaderStatus(string ConnectionString, Guid RepairHeaderId)
+        {
+            using IDbConnection connection = new SqlConnection(ConnectionString);
+            connection.Query("EXEC SetRepairHeaderStatus '" + RepairHeaderId + "'");
         }
     }
 }

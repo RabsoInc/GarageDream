@@ -15,6 +15,14 @@ namespace Services.Implementation.Repair
             this.db = db;
         }
 
+        public string CalculateRepairStatusPerc(RepairStatus RepairStatus)
+        {
+            decimal maxRecords = db.RepairStatuses.Where(x => x.PrecedenceOrder != 99).Count();
+            decimal perc = (RepairStatus.PrecedenceOrder / maxRecords) * 100;
+            string result = decimal.ToInt32(perc).ToString()+"%";
+            return result;
+        }
+
         public RepairStatus CreateRecord(RepairStatus entity)
         {
             db.RepairStatuses.Add(entity);
