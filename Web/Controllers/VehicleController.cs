@@ -5,6 +5,7 @@ using Models.BaseModels.Vehicles;
 using Models.ViewModels.Vehicles;
 using Services.Interfaces;
 using Services.Interfaces.CRM;
+using Services.Interfaces.Vehicles;
 using System;
 using System.Collections.Generic;
 

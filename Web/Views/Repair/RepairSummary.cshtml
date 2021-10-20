@@ -1,0 +1,13 @@
+﻿@model RepairViewModel
+
+@{
+    ViewData["Title"] = "RaiseNewJob";
+}
+
+@await Component.InvokeAsync("Title",
+    new
+    {
+        TitleText = "Repair Details & Summary",
+        ActionButtonNeeded = false
+    })
+

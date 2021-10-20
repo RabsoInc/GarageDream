@@ -23,6 +23,7 @@ using Services.Interfaces.Diary;
 using Services.Interfaces.Generic;
 using Services.Interfaces.Repair;
 using Services.Interfaces.System;
+using Services.Interfaces.Vehicles;
 
 namespace Web
 {
@@ -56,6 +57,7 @@ namespace Web
             services.AddTransient<IDiarySlot, DiarySlot_Implementation>();
             services.AddTransient<IFuelType, FuelType_Implementation>();
             services.AddTransient<IGender, Gender_Implementation>();
+            services.AddTransient<IRepairHeader, RepairHeader_Implementation>();
             services.AddTransient<IRepairStatus, RepairStatus_Implementation>();
             services.AddTransient<IStaticLists, StaticLists_Implementation>();
             services.AddTransient<ISystemJob, SystemJob_Implementation>();

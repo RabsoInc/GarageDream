@@ -1,5 +1,7 @@
-﻿using Models.BaseModels.Vehicles;
-using Services.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Models.BaseModels.Vehicles;
+using Models.ViewModels.Vehicles;
+using Services.Interfaces.Vehicles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +42,30 @@ namespace Services.Implementation.Vehicles
                 .Where(x => x.Customer.CustomerId == CustomerId)
                 .OrderBy(x => x.VehicleId)
                 .ToList();
+        }
+
+        public List<VehicleCustomSelectViewModel> ReturnAllRecordsByCustomerId_CustomDisplay(Guid CustomerId)
+        {
+           List< VehicleCustomSelectViewModel> result = new();
+
+            List<Vehicle> vehicles = db.Vehicles
+                .Where(x => x.Customer.CustomerId == CustomerId)
+                .Include(x => x.VehicleMake)
+                .Include(x => x.VehicleModel)
+                .OrderBy(x => x.VehicleId)
+                .ToList();
+
+            foreach (var vehicle in vehicles)
+            {
+                var x = new VehicleCustomSelectViewModel();
+                x.VehicleId = vehicle.VehicleId;
+                x.SelectDescription = vehicle.VehicleMake.VehicleMakeDescription + " "
+                    + vehicle.VehicleModel.VehicleModelDescription + " "
+                    + vehicle.RegistrationNumber;
+                result.Add(x);
+            }
+
+            return result;
         }
 
         public Vehicle ReturnSingleRecord(string Description)

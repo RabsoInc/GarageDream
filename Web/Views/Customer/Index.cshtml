@@ -28,7 +28,7 @@
         @foreach (var customer in Model.Customers)
         {
             <tr>
-                <td class="table-row-guid">@customer.CustomerId.ToString().ToUpper()</td>
+                <td class="table-row-guid customerId">@customer.CustomerId.ToString().ToUpper()</td>
                 <td>@customer.CustomerName</td>
                 <td>@customer.AddressLine1</td>
                 <td>@customer.Balance</td>
@@ -39,7 +39,8 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                             <li><a class="dropdown-item" asp-action="Manage" asp-controller="Customer" asp-route-CustomerId="@customer.CustomerId">Manage Details</a></li>
-                            <li><a class="dropdown-item" asp-action="RaiseNewRepair" asp-controller="Repair" asp-route-CustomerId="@customer.CustomerId">Raise New Repair</a></li>
+                            <li><a class="dropdown-item raiseNewRepair" data-bs-toggle="modal" data-bs-target="#raiseNewRepairModal">Raise New Repair</a></li>
+                            <li><a class="dropdown-item loadExistingRepair" data-bs-toggle="modal" data-bs-target="#viewRepairsModal">View Repairs</a></li>
                         </ul>
                     </div>
                 </td>
@@ -48,3 +49,91 @@
     </tbody>
 </table>
 
+<div class="modal fade" id="raiseNewRepairModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Please select a vehicle to continue</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="Repair" asp-action="CreateRepair">
+                    <div>
+                        <input asp-for="@Model.NewRepair.CustomerId" id="customerId" hidden readonly/>
+                    </div>
+                    <div class="mb-3">
+                        <select asp-for="@Model.NewRepair.VehicleId" class="form-select" id="vehicleDetailSelect"></select>
+                    </div>
+                    <button class="form-submit-button">Create new Repair</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewRepairsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Please select a repair to view the status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="get" asp-controller="Repair" asp-action="RepairSummary">
+                    <div>
+                        <input id="customerIdExisitingRepair" readonly hidden/>
+                    </div>
+                    <div class="mb-3">
+                        <select asp-for="@Model.RepairHeaderId" class="form-select" id="RepairHeaderSelect"></select>
+                    </div>
+                    <button class="form-submit-button">Load Repair</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.raiseNewRepair').click(function () {
+        //Pull through the data from the table
+        $tr = $(this).closest('tr');
+        var customerId = $('.customerId', $tr).text();
+
+        //Assign the data to the fields
+        $("#customerId").val(customerId);
+
+        //Populate the vehicle drop down
+        var url = '@Url.Content("~/")' + "Customer/GetVehiclesByCustomer";
+        var ddlSource = "#customerId";
+        $.getJSON(url, { customerId: $(ddlSource).val() }, function (data) {
+            var items = '';
+            $("#vehicleDetailSelect").empty();
+            $.each(data, function (i, row) {
+                items += "<option value='" + row.value + "'>" + row.text + "</option>"
+            });
+            $("#vehicleDetailSelect").html(items);
+        });
+    });
+
+    $('.loadExistingRepair').click(function () {
+        //Pull through the data from the table
+        $tr = $(this).closest('tr');
+        var customerId = $('.customerId', $tr).text();
+
+        //Assign the data to the fields
+        $("#customerIdExisitingRepair").val(customerId);
+
+        //Populate the repairs drop down
+        var url = '@Url.Content("~/")' + "Customer/GetRepairsByCustomer";
+        var ddlSource = "#customerIdExisitingRepair";
+        $.getJSON(url, { customerId: $(ddlSource).val() }, function (data) {
+            var items = '';
+            $("#RepairHeaderSelect").empty();
+            $.each(data, function (i, row) {
+                items += "<option value='" + row.value + "'>" + row.text + "</option>"
+            });
+            $("#RepairHeaderSelect").html(items);
+        });
+    });
+
+</script>
