@@ -4,10 +4,8 @@
     ViewData["Title"] = "RaiseNewJob";
 }
 
-<h4 class="text-primary">@Model.RepairHeader.RepairStatus.RepairStatusDescription</h4>
-<div class="progress position-relative" style="height:30px">
-    <div class="progress-bar" role="progressbar" style="width: @Model.RepairHeaderStatusPerc" aria-valuenow=@Model.RepairHeaderStatusPerc aria-valuemin="0" aria-valuemax="100"></div>
-</div>
+
+@ViewBag.LoadEditInstruction
 
 @await Component.InvokeAsync("Title",
     new
@@ -17,24 +15,222 @@
     })
 
 <div class="row">
-    <div class="col">
-        <label>Customer: @Model.RepairHeader.Vehicle.Customer.Title.TitleDescription @Model.RepairHeader.Vehicle.Customer.FirstName @Model.RepairHeader.Vehicle.Customer.LastName</label>
+    <div class="col-2">
+        <label><strong>Customer</strong>: @Model.RepairHeader.Vehicle.Customer.Title.TitleDescription @Model.RepairHeader.Vehicle.Customer.FirstName @Model.RepairHeader.Vehicle.Customer.LastName</label>
     </div>
-    <div class="col">
-        <label>Vehicle: @Model.RepairHeader.Vehicle.VehicleMake.VehicleMakeDescription @Model.RepairHeader.Vehicle.VehicleModel.VehicleModelDescription @Model.RepairHeader.Vehicle.RegistrationNumber</label>
+    <div class="col-2">
+        <label><strong>Vehicle</strong>: @Model.RepairHeader.Vehicle.VehicleMake.VehicleMakeDescription @Model.RepairHeader.Vehicle.VehicleModel.VehicleModelDescription @Model.RepairHeader.Vehicle.RegistrationNumber</label>
     </div>
-    <div class="col">
-        <label>Booked: @Model.RepairHeader.JobBooked</label>
+    <div class="col-2">
+        <label><strong>Booked</strong>: @Model.RepairHeader.JobBooked</label>
     </div>
 </div>
 
-<br />
+<hr />
+
+<h6 class="text-dark">Status: @Model.RepairHeader.RepairStatus.RepairStatusDescription</h6>
+<div class="progress position-relative" style="height:30px">
+    <div class="progress-bar" role="progressbar" style="width: @Model.RepairHeaderStatusPerc" aria-valuenow=@Model.RepairHeaderStatusPerc aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+
+<hr />
 
 <div class="row">
-    <div class="col-6">
-        <strong>Repair Instructions</strong>
+    <div class="col-2">
+        <a class="form-submit-button">Parts</a>
     </div>
-    <div class="col-6">
-        <strong>Items Used</strong>
+    <div class="col-2">
+        <a class="form-submit-button">Purchase Orders</a>
+    </div>
+    <div class="col-2">
+        <a class="form-submit-button">Invoice Details</a>
+    </div>
+    <div class="col-2">
+        <a class="form-submit-button" onclick="ShowCreateRepairCategory()">Manage Repair Categories</a>
     </div>
 </div>
+
+<hr />
+
+<a class="form-submit-button" style="margin-top: 5px;" onclick="ShowCreateRepairInstruction()">Create Repair Instruction</a>
+
+<div class="row">
+    <div class="col-12">
+        <div id="RepairInstructions">
+            <table class="table-container">
+                <thead class="table-header-primary">
+                    <tr>
+                        <th>Instruction</th>
+                        <th>Status</th>
+                        <th>Work Area</th>
+                        <th>Scheduled Date</th>
+                        <th>Comments</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var instruction in Model.RepairInstructionViewModel.AllRepairInstructions)
+                    {
+                    <tr>
+                        <td>@instruction.RepairCategory.RepairCategoryDescription</td>
+                        <td>@instruction.RepairStatus.RepairStatusDescription</td>
+                        <td>@instruction.WorkArea.WorkAreaDescription</td>
+                        @if (instruction.ScheduledDate != DateTime.MinValue)
+                        {
+                            <td>@instruction.ScheduledDate</td>
+                        }
+                        else
+                        {
+                            <td>Not Scheduled</td>
+
+                        }
+                        <td>@instruction.Comments</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" asp-action="RepairSummary" asp-controller="Repair" asp-route-RepairHeaderId="@Model.RepairHeader.RepairHeaderId" asp-route-RepairInstructionId="@instruction.RepairInstructionId" asp-route-LoadEditInstruction="true">Edit Instruction</a></li>
+
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@* Repair Category Modal *@
+<div class="modal fade" id="raiseNewRepairCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Raise New Repair Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <form method="post" asp-controller="RepairCategory" asp-action="Manage">
+                            <div>
+                                <input asp-for="@Model.RepairCategoryViewModel.RepairCategory.RepairCategoryId" hidden readonly />
+                                <input asp-for="@Model.RepairHeader.RepairHeaderId" hidden readonly />
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="@Model.RepairCategoryViewModel.RepairCategory.RepairCategoryDescription" class="form-label"></label>
+                                <input asp-for="@Model.RepairCategoryViewModel.RepairCategory.RepairCategoryDescription" class="form-control" id="inputRepairCategoryDescription" onchange="ValidateSubmitButton_RepairCat()" />
+                            </div>
+                            <button class="form-submit-button" id="repairCategorySubmit">Save Repair Category</button>
+                        </form>
+                    </div>
+                    <div class="col-6">
+                        <table class="table-container">
+                            <thead class="table-header-primary">
+                                <tr>
+                                    <th>Repair Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cat in Model.RepairCategoryViewModel.AllRepairCategories)
+                                {
+                                    <tr>
+                                        <td>@cat.RepairCategoryDescription</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Repair Instruction Modal *@
+<div class="modal fade" id="raiseNewRepairInstruction" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Raise New Repair Instruction</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="Manage" asp-controller="RepairInstruction">
+                    <div>
+                        <input asp-for="@Model.RepairInstructionViewModel.RepairInstruction.RepairInstructionId" hidden readonly />
+                        <input asp-for="@Model.RepairHeader.RepairHeaderId" hidden readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="@Model.RepairInstructionViewModel.RepairInstruction.RepairCategory.RepairCategoryDescription" class="form-label"></label>
+                        <select asp-for="@Model.RepairInstructionViewModel.RepairInstruction.RepairCategory.RepairCategoryId" asp-items="ViewBag.RepairCategories" class="form-select" onchange="ValidateSubmitButton_RepairInst()" id="selectRepairCategory"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="@Model.RepairInstructionViewModel.RepairInstruction.WorkArea.WorkAreaDescription" class="form-label"></label>
+                        <select asp-for="@Model.RepairInstructionViewModel.RepairInstruction.WorkArea.WorkAreaId" asp-items="ViewBag.WorkAreas" class="form-select" onchange="ValidateSubmitButton_RepairInst()"  id="selectWorkArea"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="@Model.RepairInstructionViewModel.RepairInstruction.Comments" class="form-label"></label>
+                        <textarea asp-for="@Model.RepairInstructionViewModel.RepairInstruction.Comments" class="form-control"></textarea>
+                    </div>
+                    <button class="form-submit-button" id="repairInstructionSubmit">Save Instruction</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#repairCategorySubmit").prop("disabled", true);
+        $("#repairInstructionSubmit").prop("disabled", true);
+
+        var val = '@ViewBag.LoadEditInstruction';
+
+        if (val == "True") {
+            ShowCreateRepairInstruction();
+        }
+
+        ValidateSubmitButton_RepairInst()
+        ValidateSubmitButton_RepairCat();
+
+
+    });
+
+    function ShowCreateRepairCategory() {
+        $('#raiseNewRepairCategory').modal('show');
+    }
+
+    function ShowCreateRepairInstruction() {
+        $('#raiseNewRepairInstruction').modal('show');
+    }
+
+    function ValidateSubmitButton_RepairCat() {
+        if (
+            $('#inputRepairCategoryDescription').val() != ''
+        ) {
+            $('#repairCategorySubmit').attr('disabled', false);
+        }
+        else {
+            $('#repairCategorySubmit').attr('disabled', true);
+        }
+    };
+
+    function ValidateSubmitButton_RepairInst() {
+
+        if ($('#selectRepairCategory').val() != '00000000-0000-0000-0000-000000000000' && $('#selectWorkArea').val() != '00000000-0000-0000-0000-000000000000')
+        {
+            $('#repairInstructionSubmit').attr('disabled', false);
+        }
+        else
+        {
+            $('#repairInstructionSubmit').attr('disabled', true);
+        }
+
+    }
+
+
+</script>

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models.BaseModels.CRM;
 using Models.ViewModels.CRM;
-using Services.Interfaces;
+using Services.Interfaces.CRM;
 using System;
 
 namespace Web.Controllers

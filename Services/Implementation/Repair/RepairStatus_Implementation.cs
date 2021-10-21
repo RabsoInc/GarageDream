@@ -42,6 +42,14 @@ namespace Services.Implementation.Repair
                 .ToList();
         }
 
+        public RepairStatus ReturnFirstStatus()
+        {
+            return db.RepairStatuses
+                .OrderBy(x => x.PrecedenceOrder)
+                .Take(1)
+                .FirstOrDefault();
+        }
+
         public RepairStatus ReturnSingleRecord(string Description)
         {
             return db.RepairStatuses

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Services;
 
 namespace Services.Migrations
 {
     [DbContext(typeof(GarageDreamDbContext))]
-    partial class GarageDreamDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211021111605_AddedRepairInstruction")]
+    partial class AddedRepairInstruction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -488,9 +490,6 @@ namespace Services.Migrations
                     b.Property<Guid?>("RepairHeaderId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("RepairStatusId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("ScheduledDate")
                         .HasColumnType("datetime2");
 
@@ -502,8 +501,6 @@ namespace Services.Migrations
                     b.HasIndex("RepairCategoryId");
 
                     b.HasIndex("RepairHeaderId");
-
-                    b.HasIndex("RepairStatusId");
 
                     b.HasIndex("WorkAreaId");
 
@@ -815,10 +812,6 @@ namespace Services.Migrations
                         .WithMany()
                         .HasForeignKey("RepairHeaderId");
 
-                    b.HasOne("Models.BaseModels.Repair.RepairStatus", "RepairStatus")
-                        .WithMany()
-                        .HasForeignKey("RepairStatusId");
-
                     b.HasOne("Models.BaseModels.Repair.WorkArea", "WorkArea")
                         .WithMany()
                         .HasForeignKey("WorkAreaId");
@@ -826,8 +819,6 @@ namespace Services.Migrations
                     b.Navigation("RepairCategory");
 
                     b.Navigation("RepairHeader");
-
-                    b.Navigation("RepairStatus");
 
                     b.Navigation("WorkArea");
                 });

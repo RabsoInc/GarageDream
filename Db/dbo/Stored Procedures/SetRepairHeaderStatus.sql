@@ -1,5 +1,13 @@
-﻿CREATE PROCEDURE [dbo].[SetRepairHeaderStatus] (@RepairHeaderId UNIQUEIDENTIFIER) AS
+﻿
+CREATE PROCEDURE [dbo].[SetRepairHeaderStatus] (@RepairHeaderId UNIQUEIDENTIFIER) AS
 BEGIN
-	DECLARE @Status AS UNIQUEIDENTIFIER = (SELECT RepairStatusId FROM RepairStatuses WHERE RepairStatusDescription = 'Booked')
-	UPDATE RepairHeader SET RepairStatusId = @Status WHERE RepairStatusId = @RepairHeaderId
+UPDATE RepairHeader 
+SET RepairStatusId = 
+(
+	SELECT TOP 1 RS.RepairStatusId FROM RepairInstructions RI
+		INNER JOIN RepairStatuses RS ON RI.RepairStatusId = RS.RepairStatusId
+	WHERE RepairHeaderId = @RepairHeaderId
+	ORDER BY RS.PrecedenceOrder
+)
+WHERE RepairHeaderId = @RepairHeaderId
 END

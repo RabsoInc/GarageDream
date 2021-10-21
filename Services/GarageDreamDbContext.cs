@@ -25,6 +25,8 @@ namespace Services
         public DbSet<DiaryWorkingDate> DiaryWorkingDates { get; set; }
         public DbSet<FuelType> FuelTypes { get; set; }
         public DbSet<Gender> Genders { get; set; }
+        public DbSet<RepairCategory> RepairCategories { get; set; }
+        public DbSet<RepairInstruction> RepairInstructions { get; set; }
         public DbSet<RepairStatus> RepairStatuses { get; set; }
         public DbSet<SystemJob> SystemJobs { get; set; }
         public DbSet<SystemJobHistory> SystemJobHistories { get; set; }

@@ -57,6 +57,8 @@ namespace Web
             services.AddTransient<IDiarySlot, DiarySlot_Implementation>();
             services.AddTransient<IFuelType, FuelType_Implementation>();
             services.AddTransient<IGender, Gender_Implementation>();
+            services.AddTransient<IRepairCategory, RepairCategory_Implementation>();
+            services.AddTransient<IRepairInstruction, RepairInstruction_Implementation>();
             services.AddTransient<IRepairHeader, RepairHeader_Implementation>();
             services.AddTransient<IRepairStatus, RepairStatus_Implementation>();
             services.AddTransient<IStaticLists, StaticLists_Implementation>();

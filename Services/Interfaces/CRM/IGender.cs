@@ -2,7 +2,7 @@
 using Services.Templates;
 using System.Collections.Generic;
 
-namespace Services.Interfaces
+namespace Services.Interfaces.CRM
 {
     public interface IGender : IGenericOperations_PK_GUID<Gender>
     {

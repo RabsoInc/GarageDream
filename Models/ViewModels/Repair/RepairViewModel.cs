@@ -10,5 +10,11 @@ namespace Models.ViewModels.Repair
 
         [Required]
         public string RepairHeaderStatusPerc { get; set; }
+
+        [Required]
+        public RepairCategoryViewModel RepairCategoryViewModel { get; set; }
+
+        [Required]
+        public RepairInstructionViewModel RepairInstructionViewModel { get; set; }
     }
 }

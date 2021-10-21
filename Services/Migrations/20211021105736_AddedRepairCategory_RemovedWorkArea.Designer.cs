@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Services;
 
 namespace Services.Migrations
 {
     [DbContext(typeof(GarageDreamDbContext))]
-    partial class GarageDreamDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211021105736_AddedRepairCategory_RemovedWorkArea")]
+    partial class AddedRepairCategory_RemovedWorkArea
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -472,44 +474,6 @@ namespace Services.Migrations
                     b.ToTable("RepairHeader");
                 });
 
-            modelBuilder.Entity("Models.BaseModels.Repair.RepairInstruction", b =>
-                {
-                    b.Property<Guid>("RepairInstructionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Comments")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<Guid?>("RepairCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("RepairHeaderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("RepairStatusId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ScheduledDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("WorkAreaId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("RepairInstructionId");
-
-                    b.HasIndex("RepairCategoryId");
-
-                    b.HasIndex("RepairHeaderId");
-
-                    b.HasIndex("RepairStatusId");
-
-                    b.HasIndex("WorkAreaId");
-
-                    b.ToTable("RepairInstructions");
-                });
-
             modelBuilder.Entity("Models.BaseModels.Repair.RepairStatus", b =>
                 {
                     b.Property<Guid>("RepairStatusId")
@@ -803,33 +767,6 @@ namespace Services.Migrations
                     b.Navigation("RepairStatus");
 
                     b.Navigation("Vehicle");
-                });
-
-            modelBuilder.Entity("Models.BaseModels.Repair.RepairInstruction", b =>
-                {
-                    b.HasOne("Models.BaseModels.Repair.RepairCategory", "RepairCategory")
-                        .WithMany()
-                        .HasForeignKey("RepairCategoryId");
-
-                    b.HasOne("Models.BaseModels.Repair.RepairHeader", "RepairHeader")
-                        .WithMany()
-                        .HasForeignKey("RepairHeaderId");
-
-                    b.HasOne("Models.BaseModels.Repair.RepairStatus", "RepairStatus")
-                        .WithMany()
-                        .HasForeignKey("RepairStatusId");
-
-                    b.HasOne("Models.BaseModels.Repair.WorkArea", "WorkArea")
-                        .WithMany()
-                        .HasForeignKey("WorkAreaId");
-
-                    b.Navigation("RepairCategory");
-
-                    b.Navigation("RepairHeader");
-
-                    b.Navigation("RepairStatus");
-
-                    b.Navigation("WorkArea");
                 });
 
             modelBuilder.Entity("Models.BaseModels.System.SystemJobHistory", b =>

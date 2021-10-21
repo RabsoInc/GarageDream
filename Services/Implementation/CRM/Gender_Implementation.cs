@@ -1,5 +1,5 @@
 ﻿using Models.BaseModels.CRM;
-using Services.Interfaces;
+using Services.Interfaces.CRM;
 using System;
 using System.Collections.Generic;
 using System.Linq;
