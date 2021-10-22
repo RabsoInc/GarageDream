@@ -2,10 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
+using Models.InternalViewModels;
 using Models.ViewModels.Diary;
+using Models.ViewModels.Repair;
 using Services.Interfaces.Dapper;
 using Services.Interfaces.Diary;
 using Services.Interfaces.Repair;
+using System;
+using System.Collections.Generic;
 
 namespace Web.Controllers
 {
@@ -45,6 +49,25 @@ namespace Web.Controllers
         {
             DiarySlotService.RemoveExcessSlots(model.DiarySlotAdjustment);
             return RedirectToAction("Manage");
+        }
+
+        [HttpPost]
+        public IActionResult ScheduleJob(RepairViewModel model)
+        {
+            // Book the slots
+            DapperService.ConfirmAndBookDiarySlots(ConfigurationService.GetConnectionString("Default"), 
+                model.ScheduleRepair.UnitsRequired, 
+                model.ScheduleRepair.SelectedDate.ToShortDateString(), 
+                model.ScheduleRepair.WorkAreaDescription, 
+                model.ScheduleRepair.RepairInstructionId);
+            return RedirectToAction("RepairSummary", "Repair", new { RepairHeaderId = model.RepairHeader.RepairHeaderId });
+        }
+
+        [HttpGet]
+        public JsonResult GetAvailableSlots(int SlotsRequired, string WorkAreaDescription)
+        {
+            List<DiarySlotsAvailableInternalModel> model = DapperService.GetAvailableDiarySlots(ConfigurationService.GetConnectionString("Default"), SlotsRequired, WorkAreaDescription);
+            return Json(new SelectList(model, "AvailableDate", "AvailableDate"));
         }
     }
 }

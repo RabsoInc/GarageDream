@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Models.ViewModels.Repair;
+using Services.Interfaces.Dapper;
 using Services.Interfaces.Repair;
 using System;
-using Microsoft.Extensions.Configuration;
-using Services.Interfaces.Dapper;
 
 namespace Web.Controllers
 {

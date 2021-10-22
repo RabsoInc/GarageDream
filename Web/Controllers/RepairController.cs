@@ -6,6 +6,7 @@ using Models.BaseModels.Repair;
 using Models.ViewModels.CRM;
 using Models.ViewModels.Repair;
 using Services.Interfaces.Dapper;
+using Services.Interfaces.Generic;
 using Services.Interfaces.Repair;
 using Services.Interfaces.Vehicles;
 using System;
@@ -19,6 +20,7 @@ namespace Web.Controllers
         private readonly IVehicle VehicleService;
         private readonly IDapper DapperService;
         private readonly IConfiguration ConfigurationService;
+        private readonly IStaticLists StaticListService;
         private readonly IRepairCategory RepairCategoryService;
         private readonly IRepairInstruction RepairInstructionService;
         private readonly IRepairStatus RepairStatusService;
@@ -28,6 +30,7 @@ namespace Web.Controllers
                                 IVehicle VehicleService,
                                 IDapper DapperService,
                                 IConfiguration ConfigurationService,
+                                IStaticLists StaticListService,
                                 IRepairCategory RepairCategoryService,
                                 IRepairInstruction RepairInstructionService,
                                 IRepairStatus RepairStatusService,
@@ -37,6 +40,7 @@ namespace Web.Controllers
             this.VehicleService = VehicleService;
             this.DapperService = DapperService;
             this.ConfigurationService = ConfigurationService;
+            this.StaticListService = StaticListService;
             this.RepairCategoryService = RepairCategoryService;
             this.RepairInstructionService = RepairInstructionService;
             this.RepairStatusService = RepairStatusService;
@@ -51,6 +55,7 @@ namespace Web.Controllers
             RepairViewModel model = new();
             model.RepairCategoryViewModel = new();
             model.RepairInstructionViewModel = new();
+            model.ScheduleRepair = new();
             model.RepairHeader = RepairHeaderService.ReturnSingleRecord(RepairHeaderId);
             model.RepairHeaderStatusPerc = RepairStatusService.CalculateRepairStatusPerc(model.RepairHeader.RepairStatus);
             model.RepairCategoryViewModel.RepairCategory = new();
@@ -68,7 +73,9 @@ namespace Web.Controllers
 
             ViewBag.RepairCategories = new SelectList(RepairCategoryService.GenerateDropDowns(), "RepairCategoryId", "RepairCategoryDescription");
             ViewBag.WorkAreas = new SelectList(WorkAreaService.GenerateDropDowns(), "WorkAreaId", "WorkAreaDescription");
+            ViewBag.Numbers = new SelectList(StaticListService.Numbers(1, 25));
             ViewBag.LoadEditInstruction = LoadEditInstruction;
+
 
             return View(model);
         }

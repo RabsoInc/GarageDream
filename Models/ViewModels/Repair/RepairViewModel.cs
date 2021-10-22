@@ -16,5 +16,8 @@ namespace Models.ViewModels.Repair
 
         [Required]
         public RepairInstructionViewModel RepairInstructionViewModel { get; set; }
+
+        [Required]
+        public ScheduleRepairViewModel ScheduleRepair { get; set; }
     }
 }

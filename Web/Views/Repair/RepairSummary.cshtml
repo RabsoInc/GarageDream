@@ -28,9 +28,11 @@
 
 <hr />
 
-<h6 class="text-dark">Status: @Model.RepairHeader.RepairStatus.RepairStatusDescription</h6>
-<div class="progress position-relative" style="height:30px">
-    <div class="progress-bar" role="progressbar" style="width: @Model.RepairHeaderStatusPerc" aria-valuenow=@Model.RepairHeaderStatusPerc aria-valuemin="0" aria-valuemax="100"></div>
+<div>
+    <h6 class="text-dark">Status: @Model.RepairHeader.RepairStatus.RepairStatusDescription</h6>
+    <div class="progress position-relative" style="height:30px">
+        <div class="progress-bar" role="progressbar" style="width: @Model.RepairHeaderStatusPerc" aria-valuenow=@Model.RepairHeaderStatusPerc aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
 </div>
 
 <hr />
@@ -60,6 +62,7 @@
             <table class="table-container">
                 <thead class="table-header-primary">
                     <tr>
+                        <th hidden></th>
                         <th>Instruction</th>
                         <th>Status</th>
                         <th>Work Area</th>
@@ -71,32 +74,36 @@
                 <tbody>
                     @foreach (var instruction in Model.RepairInstructionViewModel.AllRepairInstructions)
                     {
-                    <tr>
-                        <td>@instruction.RepairCategory.RepairCategoryDescription</td>
-                        <td>@instruction.RepairStatus.RepairStatusDescription</td>
-                        <td>@instruction.WorkArea.WorkAreaDescription</td>
-                        @if (instruction.ScheduledDate != DateTime.MinValue)
-                        {
-                            <td>@instruction.ScheduledDate</td>
-                        }
-                        else
-                        {
-                            <td>Not Scheduled</td>
+                        <tr>
+                            <td hidden class="tblRepairInstructionId">@instruction.RepairInstructionId</td>
+                            <td class="tblRepairCategory">@instruction.RepairCategory.RepairCategoryDescription</td>
+                            <td>@instruction.RepairStatus.RepairStatusDescription</td>
+                            <td class="tblWorkArea">@instruction.WorkArea.WorkAreaDescription</td>
+                            @if (instruction.ScheduledDate != DateTime.MinValue)
+                            {
+                                <td>@instruction.ScheduledDate.ToShortDateString()</td>
+                            }
+                            else
+                            {
+                                <td>Not Scheduled</td>
 
-                        }
-                        <td>@instruction.Comments</td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Actions
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" asp-action="RepairSummary" asp-controller="Repair" asp-route-RepairHeaderId="@Model.RepairHeader.RepairHeaderId" asp-route-RepairInstructionId="@instruction.RepairInstructionId" asp-route-LoadEditInstruction="true">Edit Instruction</a></li>
-
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
+                            }
+                            <td class="tblComments">@instruction.Comments</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li><a class="dropdown-item" asp-action="RepairSummary" asp-controller="Repair" asp-route-RepairHeaderId="@Model.RepairHeader.RepairHeaderId" asp-route-RepairInstructionId="@instruction.RepairInstructionId" asp-route-LoadEditInstruction="true">Edit Instruction</a></li>
+                                        @if (instruction.RepairStatus.RepairStatusDescription == "Booked")
+                                        {
+                                            <li><a class="dropdown-item scheduleRepair" data-bs-toggle="modal" data-bs-target="#raiseScheduleRepair">Schedule</a></li>
+                                        }
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -170,7 +177,7 @@
                     </div>
                     <div class="mb-3">
                         <label asp-for="@Model.RepairInstructionViewModel.RepairInstruction.WorkArea.WorkAreaDescription" class="form-label"></label>
-                        <select asp-for="@Model.RepairInstructionViewModel.RepairInstruction.WorkArea.WorkAreaId" asp-items="ViewBag.WorkAreas" class="form-select" onchange="ValidateSubmitButton_RepairInst()"  id="selectWorkArea"></select>
+                        <select asp-for="@Model.RepairInstructionViewModel.RepairInstruction.WorkArea.WorkAreaId" asp-items="ViewBag.WorkAreas" class="form-select" onchange="ValidateSubmitButton_RepairInst()" id="selectWorkArea"></select>
                     </div>
                     <div class="mb-3">
                         <label asp-for="@Model.RepairInstructionViewModel.RepairInstruction.Comments" class="form-label"></label>
@@ -183,7 +190,53 @@
     </div>
 </div>
 
+@* Schedule Repair Modal *@
+<div class="modal fade" id="raiseScheduleRepair" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Schedule Booking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-controller="DiaryAvailability" asp-action="ScheduleJob">
+                    <input id="inputWorkArea" hidden readonly asp-for="@Model.ScheduleRepair.WorkAreaDescription" />
+                    <input id="inputRepairInstructionId" hidden readonly asp-for="@Model.ScheduleRepair.RepairInstructionId" />
+                    <input asp-for="@Model.RepairHeader.RepairHeaderId" hidden readonly/>
+                    <div class="mb-3">
+                        <label id="scheduleRepairJobCat"></label>
+                    </div>
+                    <div class="mb-3">
+                        <label id="scheduleRepairJobComments"></label>
+                    </div>
+                    <div class="mb-3">
+                        <label id="scheduleRepairWorkArea"></label>
+                    </div>
+                    <hr />
+                    <div class="mb-3">
+                        <label asp-for="@Model.ScheduleRepair.UnitsRequired" class="form-label"></label>
+                        <select asp-for="@Model.ScheduleRepair.UnitsRequired" class="form-control" id="inputUnitsRequired" asp-items="@ViewBag.Numbers"></select>
+                    </div>
+                    <a class="form-submit-button" onclick="FindSlots()" id="inputSearchSlots">Find Slots</a>
+                    <hr />
+                    <div id="slotsFound">
+                        <div class="mb-3">
+                            <label class="form-label">Please select a time slot</label>
+                            <select id="selectDiarySlots" class="form-select" asp-for="@Model.ScheduleRepair.SelectedDate"></select>
+                        </div>
+                        <button class="form-submit-button">Confirm Booking</button>
+                    </div>
+                    <div id="noSlotsFound">
+                        <h6>No slots found</h6>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+
     $(document).ready(function () {
         $("#repairCategorySubmit").prop("disabled", true);
         $("#repairInstructionSubmit").prop("disabled", true);
@@ -197,7 +250,23 @@
         ValidateSubmitButton_RepairInst()
         ValidateSubmitButton_RepairCat();
 
+        $('#slotsFound').hide();
+        $('#noSlotsFound').hide();
 
+    });
+
+    $('.scheduleRepair').click(function () {
+        //Pre-populate the data
+        $tr = $(this).closest('tr');
+        var category = $('.tblRepairCategory', $tr).text();
+        var comments = $('.tblComments', $tr).text();
+        var workArea = $('.tblWorkArea', $tr).text();
+        var repairInstructionId = $('.tblRepairInstructionId', $tr).text();
+        $('#scheduleRepairJobCat').text('Repair Category: ' + category);
+        $('#scheduleRepairJobComments').text('Comments: ' + comments);
+        $('#scheduleRepairWorkArea').text('Work Area: ' + workArea);
+        $('#inputWorkArea').val(workArea);
+        $('#inputRepairInstructionId').val(repairInstructionId);
     });
 
     function ShowCreateRepairCategory() {
@@ -206,16 +275,16 @@
 
     function ShowCreateRepairInstruction() {
         $('#raiseNewRepairInstruction').modal('show');
-    }
+                    }
 
     function ValidateSubmitButton_RepairCat() {
         if (
             $('#inputRepairCategoryDescription').val() != ''
         ) {
-            $('#repairCategorySubmit').attr('disabled', false);
+            $('#inputSearchSlots').attr('disabled', false);
         }
         else {
-            $('#repairCategorySubmit').attr('disabled', true);
+            $('#inputSearchSlots').attr('disabled', true);
         }
     };
 
@@ -232,5 +301,27 @@
 
     }
 
+    function FindSlots() {
+
+        var url = '@Url.Content("~/")' + "DiaryAvailability/GetAvailableslots";
+        console.log($('#inputWorkArea').val());
+        console.log($('#inputUnitsRequired').val());
+        $.getJSON(url, { SlotsRequired: $('#inputUnitsRequired').val(), WorkAreaDescription: $('#inputWorkArea').val() },
+            function (data) {
+                var items = '';
+                $("#selectDiarySlots").empty();
+                $.each(data, function (i, row) {
+                    items += "<option value='" + row.value + "'>" + row.text + "</option>"
+                });
+                $("#selectDiarySlots").html(items);
+            });
+        var resultCount = $('#selectDiarySlots option').length;
+        if (resultCount !== '0') {
+            $('#slotsFound').show();
+        }
+        else {
+            $('#noSlotsFound').show();
+        }
+    };
 
 </script>

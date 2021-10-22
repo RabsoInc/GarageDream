@@ -18,6 +18,6 @@ namespace Models.BaseModels.Diary
         [Required]
         public int UnitNumber { get; set; }
 
-        public RepairHeader CustomerJob { get; set; }
+        public RepairInstruction RepairInstruction { get; set; }
     }
 }

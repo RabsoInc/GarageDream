@@ -163,5 +163,38 @@ namespace Services.DapperExtension
             using IDbConnection connection = new SqlConnection(ConnectionString);
             connection.Query("EXEC SetRepairHeaderStatus '" + RepairHeaderId + "'");
         }
+
+        public List<DiarySlotsAvailableInternalModel> GetAvailableDiarySlots(string ConnectionString, int UnitsRequired, string WorkAreaDescription)
+        {
+
+            using IDbConnection connection = new SqlConnection(ConnectionString);
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@WorkArea", WorkAreaDescription, DbType.String, ParameterDirection.Input);
+            parameters.Add("@RequiredSlots", UnitsRequired, DbType.Int32, ParameterDirection.Input);
+
+            IEnumerable<DateTime> diaryDates = connection.Query<DateTime>("SELECT * FROM [dbo].[fn_GetDiarySlots](@WorkArea, @RequiredSlots)", parameters);
+
+            List<DiarySlotsAvailableInternalModel> result = new();
+
+            foreach (var item in diaryDates)
+            {
+                result.Add(new DiarySlotsAvailableInternalModel { AvailableDate = item.ToShortDateString() });
+            }
+
+            return result;
+        }
+
+        public void ConfirmAndBookDiarySlots(string ConnectionString, int Units, string BookedDate, string WorkAreaDescription, Guid RepairInstructionId)
+        {
+            using IDbConnection connection = new SqlConnection(ConnectionString);
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@Units", Units, DbType.Int32, ParameterDirection.Input);
+            parameters.Add("@BookedDate", BookedDate, DbType.String, ParameterDirection.Input);
+            parameters.Add("@WorkAreaDescription", WorkAreaDescription, DbType.String, ParameterDirection.Input);
+            parameters.Add("@RepairInstructionId", RepairInstructionId, DbType.Guid, ParameterDirection.Input);
+            connection.Query("EXEC DiaryBookSlots @Units, @BookedDate, @WorkAreaDescription, @RepairInstructionId", parameters);
+        }
     }
 }

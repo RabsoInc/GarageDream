@@ -66,11 +66,11 @@ namespace Services.Implementation.Diary
 
             //Load the slots
             int slotCount = db.DiarySlots
-                .Where(x => x.WorkArea == workArea && x.DiaryWorkingDate == workDate && x.CustomerJob == null)
+                .Where(x => x.WorkArea == workArea && x.DiaryWorkingDate == workDate && x.RepairInstruction == null)
                 .Count();
 
             var slots = db.DiarySlots
-                .Where(x => x.WorkArea == workArea && x.DiaryWorkingDate == workDate && x.CustomerJob == null)
+                .Where(x => x.WorkArea == workArea && x.DiaryWorkingDate == workDate && x.RepairInstruction == null)
                 .OrderByDescending(x => x.UnitNumber)
                 .Take(slotCount = model.RevisedSlots)
                 .ToList();

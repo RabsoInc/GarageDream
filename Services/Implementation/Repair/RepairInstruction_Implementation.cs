@@ -33,6 +33,7 @@ namespace Services.Implementation.Repair
             return db.RepairInstructions
                 .Include(x => x.RepairHeader)
                 .Include(x => x.RepairCategory)
+                .Include(x => x.RepairStatus)
                 .ToList();
         }
 
